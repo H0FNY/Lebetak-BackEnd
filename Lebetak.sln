@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lebetak", "Lebetak\Lebetak.csproj", "{0F51F3BD-DFD2-41EE-B731-ABCF1FFD6248}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F51F3BD-DFD2-41EE-B731-ABCF1FFD6248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F51F3BD-DFD2-41EE-B731-ABCF1FFD6248}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F51F3BD-DFD2-41EE-B731-ABCF1FFD6248}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F51F3BD-DFD2-41EE-B731-ABCF1FFD6248}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DE35F611-73F3-4F88-A9B8-1912C68A07D8}
+	EndGlobalSection
+EndGlobal
