@@ -196,6 +196,7 @@ namespace Lebetak
                         policy.AllowAnyOrigin()
                               .AllowAnyHeader()
                               .AllowAnyMethod();
+
                     });
             });
             //// SignalR
@@ -218,8 +219,8 @@ namespace Lebetak
             app.UseAuthorization();
 
             app.MapControllers();
-            app.MapHub<Newshub>("/newsHub");
-            app.MapHub<ChatHub>("/chatHub");
+            app.MapHub<Newshub>("/newsHub").RequireCors("AllowAll");
+            app.MapHub<ChatHub>("/chatHub").RequireCors("AllowAll");
             app.Run();
         }
     }

@@ -252,7 +252,7 @@ namespace Lebetak.Controllers
 
             if (result.Succeeded)
             {
-                await _unitOFWork._userManager.AddToRoleAsync(user, account.Role);
+                await _unitOFWork._userManager.AddToRoleAsync(user, "Worker");
 
                 var wallet = new Wallet
                 {
