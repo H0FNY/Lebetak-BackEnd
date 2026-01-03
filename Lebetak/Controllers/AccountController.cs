@@ -205,6 +205,84 @@ namespace Lebetak.Controllers
 
         #endregion
 
+
+
+        #region Admin Register End point
+
+        [HttpPost("Admin-register")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AdminRegister([FromForm] ClinetRegisterDTO account)
+        {
+            if (account.password != account.Confirm_Password)
+            {
+                return BadRequest("Password isn't match");
+            }
+
+            //Email + Password validation & hashing
+            if (!Regex.IsMatch(account.email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                return BadRequest("Invalid email format");
+
+            if (account.password.Length < 6)
+                return BadRequest("Password must be at least 6 characters");
+
+
+            // Check if email already exists
+            var userFromDb = await _unitOFWork._userManager.FindByEmailAsync(account.email);
+            if (userFromDb != null)
+            {
+                return BadRequest(Response<string>.Failure("User already exists"));
+            }
+
+            var user = imapper.Map<User>(account);
+
+            string SSN_F = "";
+            string SSN_B = "";
+            string profile = "";
+
+            if (account.SSN_FrontImageURL != null)
+            {
+                var res = await FileUpload.UploadAsync(account.SSN_FrontImageURL, _unitOFWork.Cloudinary, "SSN");
+                SSN_F = res.Url.ToString();
+                user.SSN_FrontURL = SSN_F;
+
+            }
+            if (account.SSN_BackImageURL != null)
+            {
+                var res = await FileUpload.UploadAsync(account.SSN_BackImageURL, _unitOFWork.Cloudinary, "SSN");
+                SSN_B = res.Url.ToString();
+                user.SSN_BackURL = SSN_B;
+            }
+            if (account.profileImage != null)
+            {
+                var res = await FileUpload.UploadAsync(account.profileImage, _unitOFWork.Cloudinary, "ProfileImages");
+                profile = res.Url.ToString();
+                user.profileImageUrl = profile;
+            }
+
+            var result = await _unitOFWork._userManager.CreateAsync(user, account.password);
+
+            if (result.Succeeded)
+            {
+                await _unitOFWork._userManager.AddToRoleAsync(user, account.Role);
+
+                var wallet = new Wallet
+                {
+                    Balance = 0,
+                    UserId = user.Id
+                };
+                user.Wallet = wallet;
+                _unitOFWork.WalletRepo.Add(wallet);
+                _unitOFWork.Save();
+                return Ok(Response<string>.Success("User created successfully"));
+            }
+
+            return BadRequest(Response<string>.Failure("Error creating user"));
+        }
+
+        #endregion
+
+
+
         #region Worker Register End point
 
         [HttpPost("worker-register")]

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Lebetak.Common.Enumes;
 using Lebetak.DTOs;
+using Lebetak.DTOs.Proposal;
 using Lebetak.DTOs.Report;
 using Lebetak.Models;
 using Lebetak.Services;
@@ -141,6 +143,58 @@ namespace Lebetak.Controllers
             _unitOFWork.Save();
             return Ok(service);
         }
+
+        [Authorize]
+        [HttpPost("finishPost/{postId}")]
+        public ActionResult FinishPost(int postId)
+        {
+            var post = _unitOFWork.PostRepo.GetById(postId);
+            if (post == null)
+            {
+                return BadRequest("Post not Exist");
+            }
+            post.Status=JobStatus.Completed;
+            _unitOFWork.Save();
+
+            return Ok("Post was Completed");
+        }
+
+        [Authorize]
+        [HttpPost("makeReview/{proposalId}")]
+        public ActionResult MakeReview(int proposalId, [FromBody] MakeReviewDTO dto)
+        {
+            var proposal=_unitOFWork.ProposalRepo.GetById(proposalId);
+            if (proposal == null)
+            {
+                return BadRequest("Proposal not Exist");
+            }
+            if (proposal.Rating != null)
+                return BadRequest("This proposal already has a review");
+
+            var rating = new Rating
+            {
+                Value = dto.Value,
+                Text = dto.Text,
+                ProposalId = proposalId
+            };
+            proposal.Rating = rating;
+            _unitOFWork.RatingRepo.Add(rating);
+            _unitOFWork.Save();
+            var avgRate = _unitOFWork.ProposalRepo.GetAll().Where(p => p.WorkerId == proposal.WorkerId && p.Rating != null).Average(p => (double?)p.Rating.Value) ?? 0;
+            var totalRates = _unitOFWork.ProposalRepo.GetAll().Count(p => p.WorkerId == proposal.WorkerId && p.Rating != null);
+
+            var worker = _unitOFWork.WorkerRepo.GetById(proposal.WorkerId);
+            worker.Rate = (float)Math.Round(avgRate, 1);
+            worker.NumberOfRates = totalRates;
+            _unitOFWork.Save();
+            return Ok("Done");
+        }
+
+
+        
+
+
+
 
         [HttpPost("reactOnWorkerProject")]
         public ActionResult ReactOnWorkerProject(int ProjectId)

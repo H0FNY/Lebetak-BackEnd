@@ -95,6 +95,19 @@ namespace Lebetak.UnitOfWork
             }
         }
 
+
+        RatingRepositry _ratingRepo;
+        public RatingRepositry RatingRepo
+        {
+            get
+            {
+                if (_ratingRepo == null) _ratingRepo = new RatingRepositry(db);
+                return _ratingRepo;
+            }
+        }
+
+
+
         ServiceRepositry _serviceRepo;
         public ServiceRepositry ServiceRepo
         {

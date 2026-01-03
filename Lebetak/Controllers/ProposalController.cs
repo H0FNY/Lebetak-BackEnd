@@ -48,7 +48,27 @@ namespace Lebetak.Controllers
             return Ok(_mapper.Map<List<ProposalViewDTO>>(proposals));
         }
 
+        [Authorize]
+        [HttpGet("review/{proposalId}")]
+        public IActionResult GetProposalReview(int proposalId)
+        {
+            var proposal = _unitOFWork.ProposalRepo
+                .GetById(proposalId);
 
+            if (proposal == null)
+                return NotFound("Proposal not found");
+
+            if (proposal.Rating == null)
+                return Ok(null); // No review yet
+
+            var review = new ProposalReviewDTO
+            {
+                RatingValue = (int)proposal.Rating.Value,
+                ReviewText = proposal.Rating.Text,
+            };
+
+            return Ok(review);
+        }
 
 
         [Authorize]

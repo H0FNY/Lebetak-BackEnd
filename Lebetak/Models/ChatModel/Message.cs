@@ -7,6 +7,7 @@
         public string Content { get; set; }
         public DateTime SentAt { get; set; }
         public bool IsFromClient { get; set; }
+        public bool IsReaded { get; set; }
 
         // relation 
         public int chatId { get; set; }
