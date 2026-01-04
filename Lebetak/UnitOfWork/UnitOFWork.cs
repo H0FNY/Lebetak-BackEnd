@@ -264,13 +264,23 @@ namespace Lebetak.UnitOfWork
         }
 
         //NotificationRepository 
-        NotificationRepository _notRepo;
-        public NotificationRepository NotificationRepo
+        ChatNotificationRepositry _chatNotificationRepo;
+        public ChatNotificationRepositry ChatNotificationRepo
         {
             get
             {
-                if (_notRepo == null) _notRepo = new NotificationRepository(db);
-                return _notRepo;
+                if (_chatNotificationRepo == null) _chatNotificationRepo = new ChatNotificationRepositry(db);
+                return _chatNotificationRepo;
+            }
+        }
+
+        ProposalNotificationRepositry _proposalNotificationRepo;
+        public ProposalNotificationRepositry ProposalNotificationRepo
+        {
+            get
+            {
+                if (_proposalNotificationRepo == null) _proposalNotificationRepo = new ProposalNotificationRepositry(db);
+                return _proposalNotificationRepo;
             }
         }
 

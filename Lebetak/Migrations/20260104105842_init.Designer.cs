@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lebetak.Migrations
 {
     [DbContext(typeof(LebetakContext))]
-    [Migration("20251229213331_init")]
+    [Migration("20260104105842_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -357,6 +357,9 @@ namespace Lebetak.Migrations
                     b.Property<bool>("IsFromClient")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsReaded")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("SentAt")
                         .HasColumnType("datetime2");
 
@@ -368,6 +371,41 @@ namespace Lebetak.Migrations
                     b.HasIndex("chatId");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("Lebetak.Models.ChatNotification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.ToTable("ChatNotifications");
                 });
 
             modelBuilder.Entity("Lebetak.Models.Client", b =>
@@ -443,36 +481,6 @@ namespace Lebetak.Migrations
                     b.HasKey("CompanyId", "PhoneNumber");
 
                     b.ToTable("ComponyPhones");
-                });
-
-            modelBuilder.Entity("Lebetak.Models.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRead")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Lebetak.Models.Option", b =>
@@ -1259,6 +1267,41 @@ namespace Lebetak.Migrations
                     b.ToTable("Proposal");
                 });
 
+            modelBuilder.Entity("Lebetak.Models.ProposalNotification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.ToTable("ProposalNotifications");
+                });
+
             modelBuilder.Entity("Lebetak.Models.Question", b =>
                 {
                     b.Property<int>("Id")
@@ -1682,6 +1725,9 @@ namespace Lebetak.Migrations
                     b.Property<string>("F_Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsEmailDisabled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("L_Name")
                         .IsRequired()

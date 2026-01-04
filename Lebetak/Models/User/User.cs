@@ -35,6 +35,6 @@ namespace Lebetak.Models
         public virtual Client? Client { get; set; }
         public virtual Worker? Worker { get; set; }
         public virtual Owner? Owner { get; set; }
-
+        public bool IsEmailDisabled { get; set; } = false;
     }
 }

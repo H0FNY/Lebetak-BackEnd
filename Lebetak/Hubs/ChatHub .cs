@@ -1,5 +1,6 @@
 ﻿using Lebetak.Models;
 using Lebetak.Models.ChatModel;
+using Lebetak.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,17 @@ public class ChatHub : Hub
         };
         _context.Messages.Add(message);
         await _context.SaveChangesAsync();
+        
+
+        var notification = new ChatNotification
+        {
+            UserId = message.IsFromClient ? chat.WorkerId : chat.clientId,
+            ChatId = chatId,
+            Message = "تم ارسال رسالة جديدة اليك"
+        };
+
+        _context.ChatNotifications.Add(notification);
+        await _context.SaveChangesAsync();
         // Broadcast only to the participants in this specific one-to-one group
         await Clients.Group($"chat_{chatId}").SendAsync("ReceiveMessage", new
         {
@@ -45,6 +57,7 @@ public class ChatHub : Hub
             sentAt = message.SentAt,
             isFromClient = message.IsFromClient
         });
+
     }
     public async Task<int> CreateOrGetChat(string workerId)
     {

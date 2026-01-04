@@ -25,7 +25,8 @@ namespace Lebetak.Models
         public DbSet<ProjectCompany> ProjectCompanies { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<ServiceAnswer> ServiceAnswers { get; set; }
-        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<ChatNotification> ChatNotifications { get; set; }
+        public DbSet<ProposalNotification> ProposalNotifications { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Chat> Chats { get; set; }
         public DbSet<Message> Messages { get; set; }
@@ -65,8 +66,8 @@ namespace Lebetak.Models
             modelBuilder.ApplyConfiguration(new AttServiceConfiguration());
 
             modelBuilder.ApplyConfiguration(new ReportConfiguration());
-            //modelBuilder.ApplyConfiguration(new AttCompanyProjectConfiguration());
-            modelBuilder.ApplyConfiguration(new NotificationConfiguration());
+            modelBuilder.ApplyConfiguration(new ChatNotificationConfiguration());
+            modelBuilder.ApplyConfiguration(new ProposalNotificationConfigration());
 
 
 

@@ -44,6 +44,7 @@ namespace Lebetak.Migrations
                     ApartmentNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SSN_FrontURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SSN_BackURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsEmailDisabled = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -81,7 +82,7 @@ namespace Lebetak.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Notifications",
+                name: "ChatNotifications",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -89,11 +90,12 @@ namespace Lebetak.Migrations
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     IsRead = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ChatId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.PrimaryKey("PK_ChatNotifications", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -108,6 +110,23 @@ namespace Lebetak.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PostStatuses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProposalNotifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PostId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProposalNotifications", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -705,6 +724,7 @@ namespace Lebetak.Migrations
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SentAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsFromClient = table.Column<bool>(type: "bit", nullable: false),
+                    IsReaded = table.Column<bool>(type: "bit", nullable: false),
                     chatId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -1110,6 +1130,11 @@ namespace Lebetak.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChatNotifications_CreatedAt",
+                table: "ChatNotifications",
+                column: "CreatedAt");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Chats_clientId",
                 table: "Chats",
                 column: "clientId");
@@ -1184,6 +1209,11 @@ namespace Lebetak.Migrations
                 name: "IX_Proposal_WorkerId",
                 table: "Proposal",
                 column: "WorkerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProposalNotifications_CreatedAt",
+                table: "ProposalNotifications",
+                column: "CreatedAt");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Question_CategoryId",
@@ -1286,13 +1316,16 @@ namespace Lebetak.Migrations
                 name: "AttWorkerProjects");
 
             migrationBuilder.DropTable(
+                name: "ChatNotifications");
+
+            migrationBuilder.DropTable(
                 name: "ComponyPhones");
 
             migrationBuilder.DropTable(
                 name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "Notifications");
+                name: "ProposalNotifications");
 
             migrationBuilder.DropTable(
                 name: "Rating");

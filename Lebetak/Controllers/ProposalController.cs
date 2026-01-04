@@ -127,13 +127,14 @@ namespace Lebetak.Controllers
             _unitOFWork.ProposalRepo.Add(proposal);
             _unitOFWork.Save();
 
-            var notification = new Notification
+            var notification = new ProposalNotification
             {
                 UserId = post.ClientId,
-                Message = "تم إرسال عرض جديد على طلبك"
+                PostId = post.Id,
+                Message = "تم إرسال عرض جديد علي الاعلان الخاص بك"
             };
 
-            _unitOFWork.NotificationRepo.Add(notification);
+            _unitOFWork.ProposalNotificationRepo.Add(notification);
             _unitOFWork.Save();
 
             await _hub.Clients.User(post.ClientId)
@@ -170,13 +171,14 @@ namespace Lebetak.Controllers
 
             _unitOFWork.Save();
 
-            var notification = new Notification
+            var notification = new ProposalNotification
             {
                 UserId = proposal.Worker.UserId,
-                Message = "تم قبول عرضك أجهز للعمل "
+                PostId = proposal.PostId,
+                Message = "تم قبول عرضك أجهز للعمل"
             };
 
-            _unitOFWork.NotificationRepo.Add(notification);
+            _unitOFWork.ProposalNotificationRepo.Add(notification);
             _unitOFWork.Save();
 
             await _hub.Clients.User(proposal.Worker.UserId)

@@ -1,10 +1,12 @@
 ﻿using Lebetak.DTOs;
+using Lebetak.Hubs;
 using Lebetak.Models;
 using Lebetak.Models.ChatModel;
 using Lebetak.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -16,7 +18,12 @@ namespace Lebetak.Controllers
     {
 
         private readonly UnitOFWork _unitOfWork;
-        public ChatController(UnitOFWork unitOfWork) => _unitOfWork = unitOfWork;
+        private readonly IHubContext<Newshub> _hub;
+        public ChatController(UnitOFWork unitOfWork, IHubContext<Newshub> hub) 
+        { 
+            _unitOfWork = unitOfWork; 
+            _hub = hub;
+        }
         [HttpGet("messages/{chatId}")]
         public async Task<IActionResult> GetMessages(int chatId)
         {
@@ -80,12 +87,25 @@ namespace Lebetak.Controllers
                 Content = dto.Content,
                 SentAt = DateTime.UtcNow,
                 IsFromClient = isFromClient,
-                IsReaded=false
-
+                IsReaded = false
             };
 
             _unitOfWork.MessageRepo.Add(message);
             _unitOfWork.Save();
+
+            var notification = new ChatNotification
+            {
+                UserId = isFromClient ? chat.WorkerId : chat.clientId,
+                ChatId = chatId,
+                Message = "تم ارسال رسالة جديدة اليك"
+            };
+
+            _unitOfWork.ChatNotificationRepo.Add(notification);
+            _unitOfWork.Save();
+
+            await _hub.Clients.User(isFromClient ? chat.WorkerId : chat.clientId)
+                .SendAsync("ReceiveNotification", notification.Message);
+
 
             var result = new MessageViewDTO
             {
