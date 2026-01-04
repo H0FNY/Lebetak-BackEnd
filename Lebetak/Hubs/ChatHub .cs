@@ -15,7 +15,6 @@ public class ChatHub : Hub
     {
         var userId = Context.UserIdentifier;
         var chat = await _context.Chats.FindAsync(chatId);
-        // Security: Only allow the Client or Worker associated with this chat to join
         if (chat != null && (chat.clientId == userId || chat.WorkerId == userId))
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, $"chat_{chatId}");
