@@ -28,7 +28,9 @@ namespace Lebetak
                     options.JsonSerializerOptions.ReferenceHandler =
                         System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
                 });
-
+            builder.Services.Configure<OpenAIOptions>(
+            builder.Configuration.GetSection("OpenAI"));
+            builder.Services.AddHttpClient();
             builder.Services.AddOpenApi();
 
             // ================= DbContext =================

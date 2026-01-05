@@ -220,6 +220,16 @@ namespace Lebetak.UnitOfWork
             }
         }
 
+        UserRepositry _appUserRepo;
+        public UserRepositry AppUserRepo
+        {
+            get
+            {
+                if (_appUserRepo == null) _appUserRepo = new UserRepositry(db);
+                return _appUserRepo;
+            }
+        }
+
         WalletRepository _wallerRepo;
         public WalletRepository WalletRepo
         {
